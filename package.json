@@ -1,0 +1,73 @@
+{
+  "name": "dnotifier-security-lens",
+  "displayName": "DNotifier Security Lens",
+  "description": "Local-first code and dependency security checks with DNotifier AI triage.",
+  "version": "0.1.0",
+  "publisher": "dnotifier-hackathon",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Linters",
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:dnotifierSecurityLens.scanWorkspace",
+    "onCommand:dnotifierSecurityLens.configureCredentials",
+    "onCommand:dnotifierSecurityLens.triageWithAgent",
+    "onCommand:dnotifierSecurityLens.resetOsvConsent"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dnotifierSecurityLens.scanWorkspace",
+        "title": "DNotifier Security Lens: Scan Workspace"
+      },
+      {
+        "command": "dnotifierSecurityLens.configureCredentials",
+        "title": "DNotifier Security Lens: Configure DNotifier Credentials"
+      },
+      {
+        "command": "dnotifierSecurityLens.triageWithAgent",
+        "title": "DNotifier Security Lens: Triage Findings with DNotifier Agent"
+      },
+      {
+        "command": "dnotifierSecurityLens.resetOsvConsent",
+        "title": "DNotifier Security Lens: Reset OSV Check Consent"
+      }
+    ],
+    "configuration": {
+      "title": "DNotifier Security Lens",
+      "properties": {
+        "dnotifierSecurityLens.provider": {
+          "type": "string",
+          "default": "ollama",
+          "description": "DNotifier AI provider configured in the DNotifier dashboard (for example: ollama, hugging_face)."
+        },
+        "dnotifierSecurityLens.model": {
+          "type": "string",
+          "default": "llama3.2",
+          "description": "Model ID exposed by the selected DNotifier provider."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "typecheck": "tsc -p . --noEmit",
+    "test": "npm run build && node --test test/*.test.cjs",
+    "vscode:prepublish": "npm run build",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "@dnotifier-realtime/dnotifier": "^1.1.25"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.2",
+    "typescript": "^5.8.2"
+  }
+}
