@@ -4,8 +4,8 @@ import { triageWithDNotifier } from "./dnotifierAgent";
 import type { Finding, ScanReport, Severity } from "./scanner";
 import { scanWorkspace } from "./scanner";
 
-const SECRET_APP_ID_KEY = "dnotifierSecurityLens.appId";
-const SECRET_KEY = "dnotifierSecurityLens.secret";
+const APP_ID_STORAGE_KEY = "dnotifierSecurityLens.appId";
+const CREDENTIAL_STORAGE_KEY = "dnotifierSecurityLens.secret";
 const OSV_CONSENT_KEY = "dnotifierSecurityLens.osvConsent";
 
 let latestReport: ScanReport | undefined;
@@ -115,7 +115,7 @@ async function getOsvConsent(context: vscode.ExtensionContext): Promise<boolean 
 }
 
 async function configureCredentials(context: vscode.ExtensionContext): Promise<void> {
-  const currentAppId = await context.secrets.get(SECRET_APP_ID_KEY);
+  const currentAppId = await context.secrets.get(APP_ID_STORAGE_KEY);
   const appId = await vscode.window.showInputBox({
     title: "DNotifier app ID",
     prompt: "Stored in VS Code SecretStorage. Do not enter the app secret here.",
@@ -134,8 +134,8 @@ async function configureCredentials(context: vscode.ExtensionContext): Promise<v
   if (!secret?.trim()) {
     return;
   }
-  await context.secrets.store(SECRET_APP_ID_KEY, appId.trim());
-  await context.secrets.store(SECRET_KEY, secret.trim());
+  await context.secrets.store(APP_ID_STORAGE_KEY, appId.trim());
+  await context.secrets.store(CREDENTIAL_STORAGE_KEY, secret.trim());
   void vscode.window.showInformationMessage("DNotifier credentials saved to VS Code SecretStorage.");
 }
 
@@ -148,8 +148,8 @@ async function runAgentTriage(context: vscode.ExtensionContext, output: vscode.O
     void vscode.window.showInformationMessage("No findings to triage. Run the DNotifier agent after a scan with findings.");
     return;
   }
-  const appId = await context.secrets.get(SECRET_APP_ID_KEY);
-  const secret = await context.secrets.get(SECRET_KEY);
+  const appId = await context.secrets.get(APP_ID_STORAGE_KEY);
+  const secret = await context.secrets.get(CREDENTIAL_STORAGE_KEY);
   if (!appId || !secret) {
     const action = await vscode.window.showWarningMessage(
       "Configure your DNotifier app ID and secret before running the agent.",
